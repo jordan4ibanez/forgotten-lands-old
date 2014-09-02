@@ -18,6 +18,8 @@ for x = 1,diameter do
 			map[mapblock]       = {}
 			if y == 1 then
 				map[mapblock]["id"] = "1" --stone
+			elseif math.floor(math.random()*100 + 0.5) < 10 then
+				map[mapblock]["id"] = "2" -- gem
 			else
 				map[mapblock]["id"] = "0" -- dirt
 			end
@@ -25,6 +27,19 @@ for x = 1,diameter do
 			map[mapblock]["y"]  = y
 			map[mapblock]["z"]  = z
 			mapblock            = mapblock + 1
+		end
+	end
+end
+
+
+function love.keypressed(key)
+	if key == 'up' then
+		if peelback_modifier_z < diameter then
+			peelback_modifier_z = peelback_modifier_z + 1
+		end
+	elseif key == 'down' then
+		if peelback_modifier_z > 0 then
+			peelback_modifier_z = peelback_modifier_z - 1
 		end
 	end
 end
