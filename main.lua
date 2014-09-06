@@ -12,26 +12,23 @@ mapblock = 0
 
 peelback_modifier_z = 4 --stop rendering of chunk before value
 
+--super nested
+--do this this way for super easy access
 for x = 1,diameter do
+	if map[x] == nil then
+		map[x] = {}
+	end
 	for y = 1,diameter do
-		for z = 1,diameter do
-			map[mapblock]       = {}
-			if y < 1 then
-				map[mapblock]["id"] = 1 --stone
-			elseif math.floor(math.random()*100 + 0.5) < 10 then
-				map[mapblock]["id"] = 2 -- gem
-			else
-				map[mapblock]["id"] = 0 -- air
-			end
-			map[mapblock]["x"]      = x
-			map[mapblock]["y"]      = y
-			map[mapblock]["z"]      = z
-			map[mapblock]["color"]  = {math.random(0,255),math.random(0,255),math.random(0,255)}
-			mapblock                = mapblock + 1
+		if map[x][y] == nil then
+			map[x][y] = {}
+		end
+		for z = 1,diameter do	
+			map[x][y][z] = {}
+			map[x][y][z]["id"] = 0
+			map[x][y][z]["color"] = {math.floor(math.random()*255 + 0.5),math.floor(math.random()*255 + 0.5),math.floor(math.random()*255 + 0.5)}
 		end
 	end
 end
-
 
 function love.keypressed(key)
 	if key == 'up' then
@@ -53,15 +50,11 @@ function love.keypressed(key)
 end
 
 function love.draw()
-	local tempmapblock = 0
 	for x = 1,diameter do
 		for y = 1,diameter do
 			for z = 1,diameter do
-				local id     = map[tempmapblock]["id"]
-				local x      = map[tempmapblock]["x"]
-				local y      = map[tempmapblock]["y"]
-				local z      = map[tempmapblock]["z"]
-				local color  = map[tempmapblock]["color"]
+				local id     = map[x][y][z]["color"]
+				local color  = map[x][y][z]["color"]
 				if (x == 1 and z <= diameter-peelback_modifier_z) or (y == 1 and z <= diameter-peelback_modifier_z) or (z == diameter-peelback_modifier_z) and id ~= 0 then
 					--[[
 					local x = x * blocksize
@@ -77,6 +70,7 @@ function love.draw()
 					local x = x + z
 					local y = y + z - (x/2)
 					love.graphics.setColor( color, alpha )
+					
 					--TOP FACE
 					--left corner
 					x1 = x
@@ -90,8 +84,8 @@ function love.draw()
 					--top corner
 					x4 = x+blocksize--20
 					y4 = y
-					
 					love.graphics.polygon('line', x1,y1,x2,y2,x3,y3,x4,y4)
+					
 					-----LEFT FRONT FACE
 					--top left
 					x5 = x
@@ -106,9 +100,23 @@ function love.draw()
 					x8 = x
 					--20+(20/2)
 					y8 = y + ((blocksize/2)+blocksize)
-					love.graphics.polygon('line', x5,y5,x6,y6,x7,y7,x8,y8)					
+					love.graphics.polygon('line', x5,y5,x6,y6,x7,y7,x8,y8)
+					
+					-----RIGHT FRONT FACE
+					--top left
+					x9 = x+(blocksize)
+					y9 = y+(blocksize)
+					--top right
+					x10 = x+(blocksize*2)
+					y10 = y+(blocksize/2)
+					--bottom right
+					x11 = x+(blocksize*2)
+					y11 = y + ((blocksize/2)+blocksize)
+					--bottom left
+					x12 = x+(blocksize)
+					y12 = y+(blocksize*2)
+					love.graphics.polygon('line', x9,y9,x10,y10,x11,y11,x12,y12)				
 				end
-				tempmapblock = tempmapblock + 1	
 			end
 		end
 	end
