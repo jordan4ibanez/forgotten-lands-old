@@ -2,15 +2,19 @@
 --store each block in a new table using x,y,z as sub-tables instead of this mess
 require "helpers"
 
+love.window.setMode( 1600, 900)
+
 math.randomseed( os.time()) 
 
 blocksize = 20
-diameter = 5
+diameter = 20--insane
 
 map = {}
 mapblock = 0
 
-peelback_modifier_z = 4 --stop rendering of chunk before value
+black = {0,0,0}
+
+peelback_modifier_z = 0 --stop rendering of chunk before value
 
 --super nested
 --do this this way for super easy access
@@ -50,8 +54,8 @@ function love.keypressed(key)
 end
 
 function love.draw()
-	for x = 1,diameter do
-		for y = 1,diameter do
+	for x = diameter,1,-1 do
+		for y = diameter,1,-1 do
 			for z = 1,diameter do
 				local id     = map[x][y][z]["color"]
 				local color  = map[x][y][z]["color"]
@@ -65,11 +69,10 @@ function love.draw()
 					love.graphics.print(id, x, y)
 					]]--
 					local x = x * blocksize
-					local y = (y+3) * blocksize
+					local y = (y+10) * blocksize
 					local z = z * blocksize
 					local x = x + z
 					local y = y + z - (x/2)
-					love.graphics.setColor( color, alpha )
 					
 					--TOP FACE
 					--left corner
@@ -84,6 +87,10 @@ function love.draw()
 					--top corner
 					x4 = x+blocksize--20
 					y4 = y
+					
+					love.graphics.setColor( color, alpha )
+					love.graphics.polygon('fill', x1,y1,x2,y2,x3,y3,x4,y4)
+					love.graphics.setColor( black, alpha )
 					love.graphics.polygon('line', x1,y1,x2,y2,x3,y3,x4,y4)
 					
 					-----LEFT FRONT FACE
@@ -100,6 +107,9 @@ function love.draw()
 					x8 = x
 					--20+(20/2)
 					y8 = y + ((blocksize/2)+blocksize)
+					love.graphics.setColor( color, alpha )
+					love.graphics.polygon('fill', x5,y5,x6,y6,x7,y7,x8,y8)
+					love.graphics.setColor( black, alpha )
 					love.graphics.polygon('line', x5,y5,x6,y6,x7,y7,x8,y8)
 					
 					-----RIGHT FRONT FACE
@@ -115,7 +125,10 @@ function love.draw()
 					--bottom left
 					x12 = x+(blocksize)
 					y12 = y+(blocksize*2)
-					love.graphics.polygon('line', x9,y9,x10,y10,x11,y11,x12,y12)				
+					love.graphics.setColor( color, alpha )
+					love.graphics.polygon('fill', x9,y9,x10,y10,x11,y11,x12,y12)
+					love.graphics.setColor( black, alpha )
+					love.graphics.polygon('line', x9,y9,x10,y10,x11,y11,x12,y12)
 				end
 			end
 		end
