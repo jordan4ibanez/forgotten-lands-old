@@ -1,0 +1,37 @@
+old setup for rendering blocks
+--[[
+BACKUP
+local x = x * blocksize
+local y = (y+4) * blocksize
+local z = z * blocksize
+local x = x + z
+local y = y + z - (x/2)
+]]--
+old setup for viewing positions
+--[[
+local x = x * blocksize
+local y = (y+7) * blocksize
+local z = z * blocksize
+local x = x + z
+local y = y + z - (x/2)
+love.graphics.print(id, x, y)
+]]--
+
+old set up for viewing internal blocks
+(PART OF on key press)
+	if key == 'up' then
+		blocksize = blocksize + 1
+	elseif key == 'down' then
+		if blocksize > 0 then
+			blocksize = blocksize - 1
+		end
+	end
+	if key == 'left' then
+		if peelback_modifier_z < diameter-1 then
+			peelback_modifier_z = peelback_modifier_z + 1
+		end
+	elseif key == 'right' then
+		if peelback_modifier_z > 0 then
+			peelback_modifier_z = peelback_modifier_z - 1
+		end
+	end
